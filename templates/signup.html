@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'includes/deps.html' %}
+
+    <title>Authority | Sign Up!</title>
+    <script src="/static/js/signup.js"></script>
+  </head>
+  <body>
+    <div id="message_box"></div>
+    {% include 'fragments/navbar.html' %}
+    
+    <main class="container-1 middlr">
+      <div class="card w-1000 middlr">
+        <div class="card-content">
+          <h1 class="text-center">Sign Up</h1>
+          <br />
+
+          <form id="signup-form">
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label">Displayname</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <p class="control">
+                    <input class="input" type="text" name="displayname" placeholder="Enter displayname..." required />
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label">Username</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <p class="control">
+                    <input class="input" type="text" name="username" placeholder="Enter username..." required />
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label">Email</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <p class="control">
+                    <input class="input" type="email" name="email" placeholder="Enter email..." required />
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label">Password</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <p class="control">
+                    <input class="input" type="password" name="password" placeholder="Enter password..." required />
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label">Confirm Password</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <p class="control">
+                    <input class="input" type="password" name="password_confirm" placeholder="Enter password confirmation..." required />
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label"></label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <button type="submit" class="button is-success">Submit</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+  </body>
+</html>

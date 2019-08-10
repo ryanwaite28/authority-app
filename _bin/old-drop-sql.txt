@@ -1,0 +1,16 @@
+/*
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS followings;
+DROP TABLE IF EXISTS subscriptions;
+DROP TABLE IF EXISTS stories;
+DROP TABLE IF EXISTS books;
+DROP TABLE IF EXISTS book_pages;
+DROP TABLE IF EXISTS story_likes;
+DROP TABLE IF EXISTS book_likes;
+DROP TABLE IF EXISTS book_page_likes;
+DROP TABLE IF EXISTS story_comments;
+DROP TABLE IF EXISTS book_comments;
+DROP TABLE IF EXISTS book_page_comments;
+DROP TABLE IF EXISTS messages;
+DROP TABLE IF EXISTS notifications;
+*/

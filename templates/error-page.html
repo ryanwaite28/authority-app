@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'includes/deps.html' %}
+
+    <title>Authority | Error</title>
+    <script src="/static/js/user-page.js"></script>
+  </head>
+  <body>
+    <div id="message_box"></div>
+    {% include 'fragments/navbar.html' %}
+    
+    <main class="container-1 middlr">
+      <div class="card w-1000 middlr">
+        <div class="card-content">
+          <h1 class="text-center">Error: {{ error_message }}</h1>
+        </div>
+      </div>
+    </main>
+
+  </body>
+</html>
