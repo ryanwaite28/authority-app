@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     inputs['email'].value = you.email;
     inputs['weblink'].value = you.weblink;
     inputs['bio'].value = you.bio;
+    inputs['tags'].value = you.tags;
     if (you.is_private) {
       inputs['visibility'][1].checked = true;
     } else {
@@ -38,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const render = () => {
-    userMainBoxComponent = Components.create_user_profile_card(you);
+    userMainBoxComponent = Components.create_user_card(you);
     m.mount(userMainBoxElm, userMainBoxComponent);
   };
 

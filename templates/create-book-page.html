@@ -3,8 +3,8 @@
   <head>
     {% include 'includes/deps.html' %}
 
-    <title>Authority | Settings</title>
-    <script src="/static/js/settings-page.js"></script>
+    <title>Authority | Create Book!</title>
+    <script src="/static/js/create-book.js"></script>
   </head>
   <body>
     <div id="message_box"></div>
@@ -12,62 +12,21 @@
     
     <main class="container-1 middlr">
       <div class="columns">
-        <div id="user-main-box" class="column is-one-third"></div>
-
-        <div id="user-info-box" class="column">
+        <div class="column">
           <div class="card middlr">
             <div class="card-content">
-              <h1 class="text-center">Update Account Form</h1>
+              <h1 class="text-center">Create Book</h1>
               <br />
 
-              <form id="update-account-form">
+              <form id="create-form">
                 <div class="field is-horizontal">
                   <div class="field-label is-normal">
-                    <label class="label">Displayname</label>
+                    <label class="label">Title</label>
                   </div>
                   <div class="field-body">
                     <div class="field">
                       <p class="control">
-                        <input class="input" type="text" name="displayname" placeholder="Enter displayname..." required />
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="field is-horizontal">
-                  <div class="field-label is-normal">
-                    <label class="label">Username</label>
-                  </div>
-                  <div class="field-body">
-                    <div class="field">
-                      <p class="control">
-                        <input class="input" type="text" name="username" placeholder="Enter username..." required />
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="field is-horizontal">
-                  <div class="field-label is-normal">
-                    <label class="label">Email</label>
-                  </div>
-                  <div class="field-body">
-                    <div class="field">
-                      <p class="control">
-                        <input class="input" type="email" name="email" placeholder="Enter email..." required />
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="field is-horizontal">
-                  <div class="field-label is-normal">
-                    <label class="label">Website</label>
-                  </div>
-                  <div class="field-body">
-                    <div class="field">
-                      <p class="control">
-                        <input class="input" type="text" name="weblink" placeholder="Enter website..." />
+                        <input class="input" type="text" name="title" placeholder="Enter title..." required />
                       </p>
                     </div>
                   </div>
@@ -75,12 +34,12 @@
                 
                 <div class="field is-horizontal">
                   <div class="field-label is-normal">
-                    <label class="label">Bio</label>
+                    <label class="label">Summary</label>
                   </div>
                   <div class="field-body">
                     <div class="field">
                       <p class="control">
-                        <textarea name="bio" class="textarea" placeholder="Enter bio..."></textarea>
+                        <textarea name="summary" class="textarea" placeholder="Enter book summary..."></textarea>
                       </p>
                     </div>
                   </div>
@@ -119,12 +78,30 @@
 
                 <div class="field is-horizontal">
                   <div class="field-label is-normal">
-                    <label class="label">Icon</label>
+                    <label class="label">Explicit?</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="control">
+                      <label class="radio">
+                        <input id="public-radio" type="radio" name="explicit" value="yes" />
+                        Yes
+                      </label>
+                      <label class="radio">
+                        <input id="private-radio" type="radio" name="explicit" value="no" />
+                        No
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Cover Image</label>
                   </div>
                   <div class="field-body">
                     <div class="file has-name">
                       <label class="file-label">
-                        <input class="file-input" type="file" name="profile-icon">
+                        <input class="file-input" type="file" name="book-icon-cover">
                         <span class="file-cta">
                           <span class="file-icon">
                             <i class="fas fa-upload"></i>
@@ -133,7 +110,7 @@
                             Choose a file…
                           </span>
                         </span>
-                        <span id="icon-filename" class="file-name"></span>
+                        <span id="book-cover-filename" class="file-name"></span>
                       </label>
                     </div>
                   </div>
@@ -141,12 +118,12 @@
 
                 <div class="field is-horizontal">
                   <div class="field-label is-normal">
-                    <label class="label">Wallpaper</label>
+                    <label class="label">Back Image</label>
                   </div>
                   <div class="field-body">
                     <div class="file has-name">
                       <label class="file-label">
-                        <input class="file-input" type="file" name="profile-wallpaper">
+                        <input class="file-input" type="file" name="book-icon-back">
                         <span class="file-cta">
                           <span class="file-icon">
                             <i class="fas fa-upload"></i>
@@ -155,47 +132,8 @@
                             Choose a file…
                           </span>
                         </span>
-                        <span id="wallpaper-filename" class="file-name"></span>
+                        <span id="book-back-filename" class="file-name"></span>
                       </label>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="field is-horizontal">
-                  <div class="field-label is-normal">
-                    <label class="label">Old Password</label>
-                  </div>
-                  <div class="field-body">
-                    <div class="field">
-                      <p class="control">
-                        <input class="input" type="password" name="old_password" placeholder="Enter old password..." />
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="field is-horizontal">
-                  <div class="field-label is-normal">
-                    <label class="label">Password</label>
-                  </div>
-                  <div class="field-body">
-                    <div class="field">
-                      <p class="control">
-                        <input class="input" type="password" name="password" placeholder="Enter new password..." />
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="field is-horizontal">
-                  <div class="field-label is-normal">
-                    <label class="label">Confirm Password</label>
-                  </div>
-                  <div class="field-body">
-                    <div class="field">
-                      <p class="control">
-                        <input class="input" type="password" name="password_confirm" placeholder="Enter new password confirmation..." />
-                      </p>
                     </div>
                   </div>
                 </div>

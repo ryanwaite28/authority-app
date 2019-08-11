@@ -60,12 +60,18 @@ const Components = (function(){
             ]),
             m('div', { class: 'content' }, [
               m('p', { class: 'is-size-5' }, (user.bio || '...')),
-              m('p', { class: '' }, `Following: ${user.following_count}`),
-              m('p', { class: '' }, `Followers: ${user.followers_count}`),
-              m('p', { class: '' }, `Reviews: ${user.reviews_count}`),
-              m('p', { class: '' }, `Poems: ${user.poems_count}`),
-              m('p', { class: '' }, `Stories: ${user.stories_count}`),
-              m('p', { class: '' }, `Books: ${user.books_count}`),
+              m('div', { class: 'columns' }, [
+                m('div', { class: 'column' }, [
+                  m('p', { class: '' }, `Following: ${user.following_count}`),
+                  m('p', { class: '' }, `Followers: ${user.followers_count}`),
+                  m('p', { class: '' }, `Reviews: ${user.reviews_count}`),
+                ]),
+                m('div', { class: 'column' }, [
+                  m('p', { class: '' }, `Poems: ${user.poems_count}`),
+                  m('p', { class: '' }, `Stories: ${user.stories_count}`),
+                  m('p', { class: '' }, `Books: ${user.books_count}`),
+                ]),
+              ]),
             ]),
           ]),
           m('footer', { class: 'card-footer' }, [
@@ -79,11 +85,64 @@ const Components = (function(){
     return component;
   }
 
+  function create_story_full_card (story) {
+    const cardChildren = [
+      m('div', { class: 'card-content' }, [
+        m('div', { class: 'media' }, [
+          m('div', { class: 'media-left' }, [
+            m('figure', { class: 'image is-48x48' }, [
+              m('img', { class: '', src: story.owner.icon_link }),
+            ]),
+          ]),
+          m('div', { class: 'media-content' }, [
+            m('p', { class: 'title is-4' }, story.owner.displayname),
+            m('p', { class: 'subtitle is-6' }, [
+              m('a', { href: `/users/${story.owner.username}` }, `@${story.owner.username}`),
+            ]),
+          ]),
+        ]),
+        m('div', { class: 'content' }, [
+          m('p', { class: 'is-size-3' }, story.title),
+          m('p', { class: '' }, story.body),
+          m('p', { class: '' }, story.tags),
+          m('p', { class: '' }, story.date_created),
+          m('br'),
+          m('div', { class: 'columns' }, [
+            m('div', { class: 'column' }, [
+              m('p', { class: '' }, `Likes: ${story.likes_count}`),
+              m('p', { class: '' }, `Dislikes: ${story.dislikes_count}`),
+              m('p', { class: '' }, `Comments: ${story.comments_count}`),
+              m('p', { class: '' }, `Reviews: ${story.reviews_count}`),
+            ]),
+          ]),
+        ]),
+      ])
+    ];
+
+    if (story.image_link) {
+      const cardImage = 
+        m('div', { class: 'card-image' }, [
+          m('figure', { class: 'image is-4by3' }, [
+            m('img', { class: '', src: story.image_link }),
+          ]),
+        ]);
+      cardChildren.unshift(cardImage);
+    }
+
+    const component = {
+      view: () => {
+        return m('div', { class: 'card' }, cardChildren);
+      }
+    };
+    return component;
+  }
+
   // 
 
   return Object.freeze({
     create_user_card,
     create_user_profile_card,
+    create_story_full_card,
   });
 
 })();

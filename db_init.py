@@ -19,10 +19,11 @@ def init_tables(drop_tables = False):
                     cursor.execute(command)
                     DB.commit()
                 except Exception as e:
-                    print('command failed:')
+                    print('drop command failed:')
                     print(command)
                     raise e
-                print('tables dropped successfully')
+
+            print('tables dropped successfully')
 
         commands_list = ''
         with open(sql_file) as fp:
@@ -34,7 +35,7 @@ def init_tables(drop_tables = False):
                 DB.commit()
                 tables_created_count = tables_created_count + 1
             except Exception as e:
-                print('command failed:')
+                print('create command failed:')
                 print(command)
                 raise e
 

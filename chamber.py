@@ -50,7 +50,7 @@ def uniqueValue():
 def check_value_type(value):
   is_int = isinstance(value, int)
   is_str = isinstance(value, str) 
-  is_unicode = type(value) == unicode
+  is_unicode = type(value) == unicode 
 
   print('is_int', is_int)
   print('is_str', is_str)

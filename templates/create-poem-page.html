@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'includes/deps.html' %}
+
+    <title>Authority | Create Poem!</title>
+    <script src="/static/js/create-poem.js"></script>
+  </head>
+  <body>
+    <div id="message_box"></div>
+    {% include 'fragments/navbar.html' %}
+    
+    <main class="container-1 middlr">
+      <div class="columns">
+        <div class="column">
+          <div class="card middlr">
+            <div class="card-content">
+              <h1 class="text-center">Create Poem</h1>
+              <br />
+
+              <form id="create-form">
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Title</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <p class="control">
+                        <input class="input" type="text" name="title" placeholder="Enter title..." required />
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Body</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <p class="control">
+                        <textarea name="body" class="textarea" placeholder="Enter poem body..."></textarea>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Tags</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <p class="control">
+                        <textarea name="tags" class="textarea" placeholder="Enter tags, separated by commas..."></textarea>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Visibility</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="control">
+                      <label class="radio">
+                        <input id="public-radio" type="radio" name="visibility" value="public" />
+                        Public
+                      </label>
+                      <label class="radio">
+                        <input id="private-radio" type="radio" name="visibility" value="private" />
+                        Private
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Explicit?</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="control">
+                      <label class="radio">
+                        <input id="public-radio" type="radio" name="explicit" value="yes" />
+                        Yes
+                      </label>
+                      <label class="radio">
+                        <input id="private-radio" type="radio" name="explicit" value="no" />
+                        No
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Image</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="file has-name">
+                      <label class="file-label">
+                        <input class="file-input" type="file" name="poem-icon">
+                        <span class="file-cta">
+                          <span class="file-icon">
+                            <i class="fas fa-upload"></i>
+                          </span>
+                          <span class="file-label">
+                            Choose a file…
+                          </span>
+                        </span>
+                        <span id="poem-filename" class="file-name"></span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label"></label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <button type="submit" class="button is-success">Submit</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+  </body>
+</html>

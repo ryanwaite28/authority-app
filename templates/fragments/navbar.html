@@ -4,6 +4,18 @@
       <strong>Authority</strong>
     </a>
 
+    {% if logged_in %}
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">Create</a>
+
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="/create/poem">Poem</a>
+          <a class="navbar-item" href="/create/story">Story</a>
+          <a class="navbar-item" href="/create/book">Book</a>
+        </div>
+      </div>
+    {% endif %}
+
     <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbar-links">
       <span aria-hidden="true"></span>
       <span aria-hidden="true"></span>

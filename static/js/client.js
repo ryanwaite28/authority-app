@@ -30,11 +30,11 @@ const Client = (function(){
   };
 
   const sign_in = function(data) {
-    return send_request("/sign_in", "PUT", data, null)
+    return send_request("/sign_in", "PUT", data, null);
   };
 
   const sign_up = function(data) {
-    return send_request("/sign_up", "POST", data, null)
+    return send_request("/sign_up", "POST", data, null);
   };
 
   const get_user_by_username = function (username) {
@@ -68,7 +68,21 @@ const Client = (function(){
   };
 
   const update_account = function(data) {
-    return send_request("/update_account", "PUT", data, null)
+    return send_request("/update_account", "PUT", data, null).then(json => {
+      return json;
+    });
+  };
+
+  const create_story = function(data) {
+    return send_request("/create_story", "POST", data, null).then(json => {
+      return json;
+    });
+  };
+
+  const get_story_full_by_id = function(story_id) {
+    return send_request(`/get_story_full_by_id/${story_id}`, "GET", null, null).then(json => {
+      return json;
+    });
   };
 
   // export
@@ -82,5 +96,7 @@ const Client = (function(){
     get_user_profile_by_username,
     get_user_profile_by_id,
     update_account,
+    create_story,
+    get_story_full_by_id,
   });
 })();

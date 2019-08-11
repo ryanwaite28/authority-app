@@ -128,6 +128,34 @@ def settings_page():
   you_id = user_session['you_id'] if 'you_id' in user_session else False
   return render_template('settings-page.html', logged_in = logged_in, you_id = you_id)
 
+@app.route('/create/poem', methods=['GET'])
+@login_required
+def create_poem_page():
+  logged_in = True if 'session_id' in user_session else False
+  you_id = user_session['you_id'] if 'you_id' in user_session else False
+  return render_template('create-poem-page.html', logged_in = logged_in, you_id = you_id)
+
+@app.route('/create/story', methods=['GET'])
+@login_required
+def create_story_page():
+  logged_in = True if 'session_id' in user_session else False
+  you_id = user_session['you_id'] if 'you_id' in user_session else False
+  return render_template('create-story-page.html', logged_in = logged_in, you_id = you_id)
+
+@app.route('/create/book', methods=['GET'])
+@login_required
+def create_book_page():
+  logged_in = True if 'session_id' in user_session else False
+  you_id = user_session['you_id'] if 'you_id' in user_session else False
+  return render_template('create-book-page.html', logged_in = logged_in, you_id = you_id)
+
+@app.route('/create/book/<int:book_id>/page', methods=['GET'])
+@login_required
+def create_book_page_page(book_id):
+  logged_in = True if 'session_id' in user_session else False
+  you_id = user_session['you_id'] if 'you_id' in user_session else False
+  return render_template('create-book-page-page.html', logged_in = logged_in, you_id = you_id)
+
 @app.route('/users/<user_value>', methods=['GET'])
 def users_home_page(user_value):
   logged_in = True if 'session_id' in user_session else False
@@ -155,25 +183,25 @@ def users_books_list_page(user_value):
 
 
 @app.route('/poems', methods=['GET'])
-def poems_list_page(user_value):
+def poems_list_page():
   logged_in = True if 'session_id' in user_session else False
   you_id = user_session['you_id'] if 'you_id' in user_session else False
   return render_template('poems-page.html', logged_in = logged_in, you_id = you_id)
 
 @app.route('/poems/<int:poem_id>', methods=['GET'])
-def poem_page(user_value, poem_id):
+def poem_page(poem_id):
   logged_in = True if 'session_id' in user_session else False
   you_id = user_session['you_id'] if 'you_id' in user_session else False
   return render_template('poem-page.html', logged_in = logged_in, you_id = you_id)
 
 @app.route('/stories', methods=['GET'])
-def stories_list_page(user_value):
+def stories_list_page():
   logged_in = True if 'session_id' in user_session else False
   you_id = user_session['you_id'] if 'you_id' in user_session else False
   return render_template('stories-page.html', logged_in = logged_in, you_id = you_id)
 
 @app.route('/stories/<int:story_id>', methods=['GET'])
-def story_page(user_value):
+def story_page(story_id):
   logged_in = True if 'session_id' in user_session else False
   you_id = user_session['you_id'] if 'you_id' in user_session else False
   return render_template('story-page.html', logged_in = logged_in, you_id = you_id)
@@ -228,7 +256,7 @@ def get_user_profile_by_id(user_id):
 
 @app.route('/get_user_by_username_or_id/<value>', methods=['GET'])
 def get_user_by_username_or_id(value):
-  val = str(value).encode()
+  val = str(value).encode('utf-8')
   try:
     user = db_select_queries.get_user_by_id(int(val))
   except Exception as err1:
@@ -240,6 +268,11 @@ def get_user_by_username_or_id(value):
       pass
 
   return jsonify(user = user)
+
+@app.route('/get_story_full_by_id/<int:story_id>', methods=['GET'])
+def get_story_full_by_id(story_id):
+  story = db_select_queries.get_story_full_by_id(story_id)
+  return jsonify(story = story)
 
 @app.route('/get_random_users', methods=['GET'])
 def get_random_users(user_id):
@@ -333,14 +366,14 @@ def get_random_content_by_tag(content_type):
 @app.route('/sign_up', methods=['POST'])
 def sign_up():
   form_dict = {
-    "displayname": str(request.form['displayname']).encode(),
-    "username": str(request.form['username']).encode(),
-    "email": str(request.form['email']).encode(),
-    "password": str(request.form['password']).encode(),
+    "displayname": str(request.form['displayname']).encode('utf-8'),
+    "username": str(request.form['username']).encode('utf-8'),
+    "email": str(request.form['email']).encode('utf-8'),
+    "password": str(request.form['password']).encode('utf-8'),
   }
 
-  password = str(form_dict['password']).encode()
-  password_confirm = str(request.form['password_confirm']).encode()
+  password = str(form_dict['password']).encode('utf-8')
+  password_confirm = str(request.form['password_confirm']).encode('utf-8')
   passwords_do_not_match = password != password_confirm
 
   if passwords_do_not_match:
@@ -368,6 +401,69 @@ def sign_up():
     new_user_id = user_session['you_id'],
     new_username = user_session['you_username'],
   )
+
+@app.route('/create_story', methods=['POST'])
+def create_story():
+  if 'title' not in request.form:
+    return jsonify(error = True, message = 'title is required')
+
+  if 'body' not in request.form:
+    return jsonify(error = True, message = 'body is required')
+
+  if not request.form['title']:
+    return jsonify(error = True, message = 'title is required')
+
+  if not request.form['body']:
+    return jsonify(error = True, message = 'body is required')
+
+  print(request.form['body'].encode('utf-8') )
+
+  form_dict = {
+    "title": str(request.form['title']).encode('utf-8'),
+    "body": str(request.form['body']).encode('utf-8'),
+  }
+
+  if 'tags' in request.form:
+    form_dict['tags'] = str(request.form['tags']).encode('utf-8')
+    if form_dict['tags']:
+      if len(form_dict['tags']) > 100:
+        return jsonify(error = True, message = 'tags input max of 100 characters exceeded')
+  else:
+    form_dict['tags'] = ''
+
+  if 'explicit' in request.form:
+    if request.form['explicit'] == 'yes':
+      form_dict['is_explicit'] = True
+    else:
+      form_dict['is_explicit'] = False
+  else:
+    form_dict['is_explicit'] = False
+
+  if 'visibility' in request.form:
+    if request.form['visibility'] == 'private':
+      form_dict['is_private'] = True
+    else:
+      form_dict['is_private'] = False
+  else:
+    form_dict['is_private'] = False
+
+  story_icon_file = request.files['story-icon']
+  if story_icon_file:
+    is_icon_valid = story_icon_file and story_icon_file.filename != '' and allowed_photo(profile_icon_file.filename)
+    if not is_icon_valid:
+      return jsonify(error = True, message = 'file not valid')
+    else:
+      icon_res = uploadFile(story_icon_file)
+      print('icon_res', icon_res)
+      form_dict['image_id'] = icon_res["upload_result"]["public_id"]
+      form_dict['image_link'] = icon_res["upload_result"]["secure_url"]
+  else:
+    form_dict['image_id'] = ''
+    form_dict['image_link'] = ''
+
+  new_story_id = db_insert_queries.create_new_story(form_dict, user_session['you'])
+  story = db_select_queries.get_story_full_by_id(new_story_id)
+  return jsonify(message = 'Story Created Successfully!', story = story)
 
 
 
@@ -414,19 +510,33 @@ def update_account():
     return jsonify(error = True, message = 'email is required')
 
   form_dict = {
-    "displayname": str(request.form['displayname']).encode(),
-    "username": str(request.form['username']).encode(),
-    "email": str(request.form['email']).encode(),
+    "displayname": str(request.form['displayname']).encode('utf-8'),
+    "username": str(request.form['username']).encode('utf-8'),
+    "email": str(request.form['email']).encode('utf-8'),
   }
 
   if 'weblink' in request.form:
-    form_dict['weblink'] = str(request.form['weblink']).encode()
+    form_dict['weblink'] = str(request.form['weblink']).encode('utf-8')
 
   if 'bio' in request.form:
-    form_dict['bio'] = str(request.form['bio']).encode()
+    form_dict['bio'] = str(request.form['bio']).encode('utf-8')
 
-  if request.form['visibility'] == 'private':
-    form_dict['visibility'] = True
+  if form_dict['bio']:
+    if len(form_dict['bio']) > 100:
+      return jsonify(error = True, message = 'bio input max of 100 characters exceeded')
+
+  if 'tags' in request.form:
+    form_dict['tags'] = str(request.form['tags']).encode('utf-8')
+
+  if form_dict['tags']:
+    if len(form_dict['tags']) > 100:
+      return jsonify(error = True, message = 'tags input max of 100 characters exceeded')
+
+  if 'visibility' in request.form:
+    if request.form['visibility'] == 'private':
+      form_dict['visibility'] = True
+    else:
+      form_dict['visibility'] = False
   else:
     form_dict['visibility'] = False
 
@@ -435,9 +545,9 @@ def update_account():
       return jsonify(error = True, message = 'old_password input is required')
     if 'password_confirm' not in request.form:
       return jsonify(error = True, message = 'password_confirm input is required')
-    old_password = str(request.form['old_password']).encode()
-    password = str(request.form['password']).encode()
-    password_confirm = str(request.form['password_confirm']).encode()
+    old_password = str(request.form['old_password']).encode('utf-8')
+    password = str(request.form['password']).encode('utf-8')
+    password_confirm = str(request.form['password_confirm']).encode('utf-8')
     if not password:
       if old_password or password_confirm:
         return jsonify(error = True, message = 'all password inputs are required when changing password')

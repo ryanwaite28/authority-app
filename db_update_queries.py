@@ -29,6 +29,12 @@ def update_account(form_dict, you_dict):
       ''' % (form_dict['weblink'], you_dict["id"], )
       query_list.append(query)
 
+    if 'tags' in form_dict:
+      query = '''
+      UPDATE authority.users SET tags = '%s' WHERE id = %s
+      ''' % (form_dict['tags'], you_dict["id"], )
+      query_list.append(query)
+
     if 'bio' in form_dict:
       query = '''
       UPDATE authority.users SET bio = '%s' WHERE id = %s
