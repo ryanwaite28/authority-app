@@ -1,2 +1,4 @@
 DROP SCHEMA IF EXISTS authority CASCADE;
+
 DROP EXTENSION IF EXISTS "uuid-ossp";
+DROP EXTENSION IF EXISTS "tsm_system_rows";

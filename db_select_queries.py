@@ -738,7 +738,7 @@ def get_user_followings(user_id, follow_id):
       FROM authority.followings
       JOIN authority.users ON followings.follows_id = users.id
       WHERE followings.user_id = %s AND followings.id < %s
-      ORDER BY poem_comments.id DESC
+      ORDER BY followings.id DESC
       LIMIT 5
       ''' % (user_id, follow_id, )
     else:
@@ -751,7 +751,7 @@ def get_user_followings(user_id, follow_id):
       FROM authority.followings
       JOIN authority.users ON followings.follows_id = users.id
       WHERE followings.user_id = %s
-      ORDER BY poem_comments.id DESC
+      ORDER BY followings.id DESC
       LIMIT 5
       ''' % (user_id, )
 
@@ -794,7 +794,7 @@ def get_user_followers(user_id, follow_id):
       FROM authority.followings
       JOIN authority.users ON followings.user_id = users.id
       WHERE followings.follows_id = %s AND followings.id < %s
-      ORDER BY poem_comments.id DESC
+      ORDER BY followings.id DESC
       LIMIT 5
       ''' % (user_id, follow_id, )
     else:
@@ -807,7 +807,7 @@ def get_user_followers(user_id, follow_id):
       FROM authority.followings
       JOIN authority.users ON followings.user_id = users.id
       WHERE followings.follows_id = %s
-      ORDER BY poem_comments.id DESC
+      ORDER BY followings.id DESC
       LIMIT 5
       ''' % (user_id, )
 
@@ -835,6 +835,174 @@ def get_user_followers(user_id, follow_id):
       followers.append(follow)
 
     return followers
+
+  return run_db_action(callback)
+
+# 
+
+def get_user_following_requests(user_id, follow_request_id):
+  def callback(cursor):
+    if follow_request_id:
+      query = '''
+      SELECT following_requests.id AS FollowID, following_requests.user_id AS UserID, following_requests.follows_id AS FollowsID, 
+        users.id, users.displayname, users.username, 
+        users.icon_link, users.wallpaper_link, 
+        users.date_created, users.email, 
+        users.is_private, users.uuid
+      FROM authority.following_requests
+      JOIN authority.users ON following_requests.follows_id = users.id
+      WHERE following_requests.user_id = %s AND following_requests.id < %s
+      ORDER BY following_requests.id DESC
+      LIMIT 5
+      ''' % (user_id, follow_request_id, )
+    else:
+      query = '''
+      SELECT following_requests.id AS FollowID, following_requests.user_id AS UserID, following_requests.follows_id AS FollowsID, 
+        users.id, users.displayname, users.username, 
+        users.icon_link, users.wallpaper_link, 
+        users.date_created, users.email, 
+        users.is_private, users.uuid
+      FROM authority.following_requests
+      JOIN authority.users ON following_requests.follows_id = users.id
+      WHERE following_requests.user_id = %s
+      ORDER BY following_requests.id DESC
+      LIMIT 5
+      ''' % (user_id, )
+
+    cursor.execute(query)
+    results = cursor.fetchall()
+    following_requests = []
+
+    for record in results:
+      follow_request = {
+        "id": record[0],
+        "user_id": record[1],
+        "follows_id": record[2],
+        "user": {
+          "id": record[3],
+          "displayname": record[4],
+          "username": record[5],
+          "icon_link": record[6],
+          "wallpaper_link": record[7],
+          "date_created": str(record[8]),
+          "email": str(record[9]),
+          "is_private": record[10],
+          "uuid": record[11],
+        }
+      }
+      following_requests.append(follow_request)
+
+    return following_requests
+
+  return run_db_action(callback)
+
+def get_user_follower_requests(user_id, follow_request_id):
+  def callback(cursor):
+    if follow_request_id:
+      query = '''
+      SELECT following_requests.id AS FollowID, following_requests.user_id AS UserID, following_requests.follows_id AS FollowsID, 
+        users.id, users.displayname, users.username, 
+        users.icon_link, users.wallpaper_link, 
+        users.date_created, users.email, 
+        users.is_private, users.uuid
+      FROM authority.followings
+      JOIN authority.users ON following_requests.user_id = users.id
+      WHERE following_requests.follows_id = %s AND following_requests.id < %s
+      ORDER BY following_requests.id DESC
+      LIMIT 5
+      ''' % (user_id, follow_request_id, )
+    else:
+      query = '''
+      SELECT following_requests.id AS FollowID, following_requests.user_id AS UserID, following_requests.follows_id AS FollowsID, 
+        users.id, users.displayname, users.username, 
+        users.icon_link, users.wallpaper_link, 
+        users.date_created, users.email, 
+        users.is_private, users.uuid
+      FROM authority.followings
+      JOIN authority.users ON following_requests.user_id = users.id
+      WHERE following_requests.follows_id = %s
+      ORDER BY following_requests.id DESC
+      LIMIT 5
+      ''' % (user_id, )
+
+    cursor.execute(query)
+    results = cursor.fetchall()
+    follow_requests = []
+
+    for record in results:
+      follow_request = {
+        "id": record[0],
+        "user_id": record[1],
+        "follows_id": record[2],
+        "user": {
+          "id": record[3],
+          "displayname": record[4],
+          "username": record[5],
+          "icon_link": record[6],
+          "wallpaper_link": record[7],
+          "date_created": str(record[8]),
+          "email": str(record[9]),
+          "is_private": record[10],
+          "uuid": record[11],
+        }
+      }
+      follow_requests.append(follow_request)
+
+    return follow_requests
+
+  return run_db_action(callback)
+
+# 
+
+def check_poem_like(user_id, poem_id):
+  def callback(cursor):
+    query = '''
+    SELECT * FROM authority.poem_likes WHERE user_id = %s AND poem_id = %s
+    '''
+
+    cursor.execute(query, (user_id, poem_id, ))
+    result = cursor.fetchone()
+
+    return result
+
+  return run_db_action(callback)
+
+def check_story_like(user_id, story_id):
+  def callback(cursor):
+    query = '''
+    SELECT * FROM authority.story_likes WHERE user_id = %s AND story_id = %s
+    '''
+
+    cursor.execute(query, (user_id, story_id, ))
+    result = cursor.fetchone()
+
+    return result
+
+  return run_db_action(callback)
+
+def check_book_like(user_id, book_id):
+  def callback(cursor):
+    query = '''
+    SELECT * FROM authority.book_likes WHERE user_id = %s AND book_id = %s
+    '''
+
+    cursor.execute(query, (user_id, book_id, ))
+    result = cursor.fetchone()
+
+    return result
+
+  return run_db_action(callback)
+
+def check_book_page_like(user_id, book_page_id):
+  def callback(cursor):
+    query = '''
+    SELECT * FROM authority.book_page_likes WHERE user_id = %s AND book_page_id = %s
+    '''
+
+    cursor.execute(query, (user_id, book_page_id, ))
+    result = cursor.fetchone()
+
+    return result
 
   return run_db_action(callback)
 
@@ -2118,3 +2286,422 @@ def get_book_pages_slim_by_book(book_id, book_page_id):
     return book_pages
   
   return run_db_action(callback)
+
+# 
+
+def get_random_users():
+  # get random: https://www.postgresql.org/docs/9.6/tsm-system-rows.html
+  def callback(cursor):
+    query = '''
+    SELECT users.id AS OwnerID, users.displayname AS OwnerDisplayname, users.username AS OwnerUsername, 
+      users.icon_link AS OwnerIconLink, users.wallpaper_link AS OwnerWallpaperLink, 
+      users.date_created AS OwnerDateCreated, users.email AS OwnerEmail, 
+      users.is_private AS OwnerPrivate, users.uuid AS OwnerUUID
+    FROM authority.users
+    TABLESAMPLE SYSTEM_ROWS(5)
+    '''
+
+    cursor.execute(query)
+    results = cursor.fetchall()
+    users = []
+
+    for result in results:
+      user = {
+        "id": result[0],
+        "displayname": result[1],
+        "username": result[2],
+        "icon_link": result[3],
+        "wallpaper_link": result[4],
+        "date_created": str(result[5]),
+        "email": str(result[6]),
+        "is_private": result[7],
+        "uuid": result[9],
+      }
+      users.append(user)
+
+    return users
+
+  return run_db_action(callback)
+
+def get_random_poems():
+  def callback(cursor):
+    query = '''
+    SELECT poems.id AS PoemID, poems.owner_id AS PoemOwnerID, poems.title AS PoemTitle, 
+      poems.body AS PoemBody, poems.image_id AS PoemImageID, poems.image_link AS PoemImageLink, 
+      poems.tags AS PoemTags, poems.is_explicit AS PoemExplicit, poems.is_private AS PoemPrivate, 
+      poems.uuid AS PoemUUID, poems.date_created AS PoemDateCreated, poems.last_edited AS PoemLastEdited, 
+      
+      users.id AS OwnerID, users.displayname AS OwnerDisplayname, users.username AS OwnerUsername, 
+      users.icon_link AS OwnerIconLink, users.wallpaper_link AS OwnerWallpaperLink, 
+      users.date_created AS OwnerDateCreated, users.email AS OwnerEmail, 
+      users.is_private AS OwnerPrivate, users.uuid AS OwnerUUID
+    FROM authority.poems
+    JOIN authority.users ON poems.owner_id = users.id
+    TABLESAMPLE SYSTEM_ROWS(5)
+    '''
+
+    cursor.execute(query)
+    results = cursor.fetchall()
+    poems = []
+
+    for result in results:
+      poem = {
+        "id": result[0],
+        "owner_id": result[1],
+        "title": result[2],
+        "body": result[3],
+        "image_id": result[4],
+        "image_link": result[5],
+        "tags": result[6],
+        "is_explicit": result[7],
+        "is_private": result[8],
+        "uuid": result[9],
+        "date_created": result[10],
+        "last_edited": result[11],
+        "owner": {
+          "id": result[12],
+          "displayname": result[13],
+          "username": result[14],
+          "icon_link": result[15],
+          "wallpaper_link": result[16],
+          "date_created": str(result[17]),
+          "email": str(result[18]),
+          "is_private": result[19],
+          "uuid": result[20],
+        }
+      }
+      poems.append(poem)
+
+    return poems
+  
+  return run_db_action(callback)
+
+def get_random_stories():
+  def callback(cursor):
+    query = '''
+    SELECT stories.id AS StoryID, stories.owner_id AS StoryOwnerID, stories.title AS StoryTitle, 
+      stories.body AS StoryBody, stories.image_id AS StoryImageID, stories.image_link AS StoryImageLink, 
+      stories.tags AS StoryTags, stories.is_explicit AS StoryExplicit, stories.is_private AS StoryPrivate, 
+      stories.uuid AS StoryUUID, stories.date_created AS StoryDateCreated, stories.last_edited AS StoryLastEdited, 
+      
+      users.id AS OwnerID, users.displayname AS OwnerDisplayname, users.username AS OwnerUsername, 
+      users.icon_link AS OwnerIconLink, users.wallpaper_link AS OwnerWallpaperLink, 
+      users.date_created AS OwnerDateCreated, users.email AS OwnerEmail, 
+      users.is_private AS OwnerPrivate, users.uuid AS OwnerUUID
+    FROM authority.stories
+    JOIN authority.users ON stories.owner_id = users.id
+    TABLESAMPLE SYSTEM_ROWS(5)
+    '''
+
+    cursor.execute(query)
+    results = cursor.fetchall()
+    stories = []
+
+    for result in results:
+      story = {
+        "id": result[0],
+        "owner_id": result[1],
+        "title": result[2],
+        "body": result[3],
+        "image_id": result[4],
+        "image_link": result[5],
+        "tags": result[6],
+        "is_explicit": result[7],
+        "is_private": result[8],
+        "uuid": result[9],
+        "date_created": result[10],
+        "last_edited": result[11],
+        "owner": {
+          "id": result[12],
+          "displayname": result[13],
+          "username": result[14],
+          "icon_link": result[15],
+          "wallpaper_link": result[16],
+          "date_created": str(result[17]),
+          "email": str(result[18]),
+          "is_private": result[19],
+          "uuid": result[20],
+        }
+      }
+      stories.append(story)
+
+    return stories
+  
+  return run_db_action(callback)
+
+def get_random_books():
+  def callback(cursor):
+    query = '''
+    SELECT books.id AS BookID, books.owner_id AS BookOwnerID, books.title AS BookTitle, 
+      books.summary AS BookSummary, 
+      books.cover_image_id AS BookCoverImageID, books.cover_image_link AS BookCoverImageLink, 
+      books.back_image_id AS BookBackImageID, books.back_image_link AS BookBackImageLink, 
+      books.tags AS BookTags, books.is_explicit AS BookExplicit, books.is_private AS BookPrivate, 
+      books.uuid AS BookUUID, books.date_created AS BookDateCreated, books.last_edited AS BookLastEdited, 
+      
+      users.id AS OwnerID, users.displayname AS OwnerDisplayname, users.username AS OwnerUsername, 
+      users.icon_link AS OwnerIconLink, users.wallpaper_link AS OwnerWallpaperLink, 
+      users.date_created AS OwnerDateCreated, users.email AS OwnerEmail, 
+      users.is_private AS OwnerPrivate, users.uuid AS OwnerUUID
+    FROM authority.books
+    JOIN authority.users ON books.owner_id = users.id
+    TABLESAMPLE SYSTEM_ROWS(5)
+    '''
+
+    cursor.execute(query)
+    results = cursor.fetchall()
+    books = []
+
+    for result in results:
+      book = {
+        "id": result[0],
+        "owner_id": result[1],
+        "title": result[2],
+        "summary": result[3],
+        "cover_image_id": result[4],
+        "cover_image_link": result[5],
+        "back_image_id": result[6],
+        "back_image_link": result[7],
+        "tags": result[8],
+        "is_explicit": result[9],
+        "is_private": result[10],
+        "uuid": result[11],
+        "date_created": result[12],
+        "last_edited": result[13],
+        "owner": {
+          "id": result[14],
+          "displayname": result[15],
+          "username": result[16],
+          "icon_link": result[17],
+          "wallpaper_link": result[18],
+          "date_created": str(result[19]),
+          "email": str(result[20]),
+          "is_private": result[21],
+          "uuid": result[22],
+        }
+      }
+      books.append(book)
+
+    return books
+  
+  return run_db_action(callback)
+
+# 
+
+def search_users_by_criteria(column, search_string):
+  # get random: https://www.postgresql.org/docs/9.6/tsm-system-rows.html
+  def callback(cursor):
+    query = '''
+    SELECT users.id AS OwnerID, users.displayname AS OwnerDisplayname, users.username AS OwnerUsername, 
+      users.icon_link AS OwnerIconLink, users.wallpaper_link AS OwnerWallpaperLink, 
+      users.date_created AS OwnerDateCreated, users.email AS OwnerEmail, 
+      users.is_private AS OwnerPrivate, users.uuid AS OwnerUUID
+    FROM authority.users
+    WHERE '%s' LIKE %s
+    TABLESAMPLE SYSTEM_ROWS(10)
+    '''
+
+    like_criteria = '%' + str(search_string) + '%'
+    cursor.execute(query, (column, like_criteria))
+    results = cursor.fetchall()
+    users = []
+
+    for result in results:
+      user = {
+        "id": result[0],
+        "displayname": result[1],
+        "username": result[2],
+        "icon_link": result[3],
+        "wallpaper_link": result[4],
+        "date_created": str(result[5]),
+        "email": str(result[6]),
+        "is_private": result[7],
+        "uuid": result[9],
+      }
+      users.append(user)
+
+    return users
+
+  return run_db_action(callback)
+
+def search_poems_by_criteria(column, search_string):
+  def callback(cursor):
+    query = '''
+    SELECT poems.id AS PoemID, poems.owner_id AS PoemOwnerID, poems.title AS PoemTitle, 
+      poems.body AS PoemBody, poems.image_id AS PoemImageID, poems.image_link AS PoemImageLink, 
+      poems.tags AS PoemTags, poems.is_explicit AS PoemExplicit, poems.is_private AS PoemPrivate, 
+      poems.uuid AS PoemUUID, poems.date_created AS PoemDateCreated, poems.last_edited AS PoemLastEdited, 
+      
+      users.id AS OwnerID, users.displayname AS OwnerDisplayname, users.username AS OwnerUsername, 
+      users.icon_link AS OwnerIconLink, users.wallpaper_link AS OwnerWallpaperLink, 
+      users.date_created AS OwnerDateCreated, users.email AS OwnerEmail, 
+      users.is_private AS OwnerPrivate, users.uuid AS OwnerUUID
+    FROM authority.poems
+    JOIN authority.users ON poems.owner_id = users.id
+    WHERE '%s' LIKE %s
+    TABLESAMPLE SYSTEM_ROWS(10)
+    '''
+
+    like_criteria = '%' + str(search_string) + '%'
+    cursor.execute(query, (column, like_criteria))
+    results = cursor.fetchall()
+    poems = []
+
+    for result in results:
+      poem = {
+        "id": result[0],
+        "owner_id": result[1],
+        "title": result[2],
+        "body": result[3],
+        "image_id": result[4],
+        "image_link": result[5],
+        "tags": result[6],
+        "is_explicit": result[7],
+        "is_private": result[8],
+        "uuid": result[9],
+        "date_created": result[10],
+        "last_edited": result[11],
+        "owner": {
+          "id": result[12],
+          "displayname": result[13],
+          "username": result[14],
+          "icon_link": result[15],
+          "wallpaper_link": result[16],
+          "date_created": str(result[17]),
+          "email": str(result[18]),
+          "is_private": result[19],
+          "uuid": result[20],
+        }
+      }
+      poems.append(poem)
+
+    return poems
+  
+  return run_db_action(callback)
+
+def search_stories_by_criteria(column, search_string):
+  def callback(cursor):
+    query = '''
+    SELECT stories.id AS StoryID, stories.owner_id AS StoryOwnerID, stories.title AS StoryTitle, 
+      stories.body AS StoryBody, stories.image_id AS StoryImageID, stories.image_link AS StoryImageLink, 
+      stories.tags AS StoryTags, stories.is_explicit AS StoryExplicit, stories.is_private AS StoryPrivate, 
+      stories.uuid AS StoryUUID, stories.date_created AS StoryDateCreated, stories.last_edited AS StoryLastEdited, 
+      
+      users.id AS OwnerID, users.displayname AS OwnerDisplayname, users.username AS OwnerUsername, 
+      users.icon_link AS OwnerIconLink, users.wallpaper_link AS OwnerWallpaperLink, 
+      users.date_created AS OwnerDateCreated, users.email AS OwnerEmail, 
+      users.is_private AS OwnerPrivate, users.uuid AS OwnerUUID
+    FROM authority.stories
+    JOIN authority.users ON stories.owner_id = users.id
+    WHERE '%s' LIKE %s
+    TABLESAMPLE SYSTEM_ROWS(10)
+    '''
+
+    like_criteria = '%' + str(search_string) + '%'
+    cursor.execute(query, (column, like_criteria))
+    results = cursor.fetchall()
+    stories = []
+
+    for result in results:
+      story = {
+        "id": result[0],
+        "owner_id": result[1],
+        "title": result[2],
+        "body": result[3],
+        "image_id": result[4],
+        "image_link": result[5],
+        "tags": result[6],
+        "is_explicit": result[7],
+        "is_private": result[8],
+        "uuid": result[9],
+        "date_created": result[10],
+        "last_edited": result[11],
+        "owner": {
+          "id": result[12],
+          "displayname": result[13],
+          "username": result[14],
+          "icon_link": result[15],
+          "wallpaper_link": result[16],
+          "date_created": str(result[17]),
+          "email": str(result[18]),
+          "is_private": result[19],
+          "uuid": result[20],
+        }
+      }
+      stories.append(story)
+
+    return stories
+  
+  return run_db_action(callback)
+
+def search_books_by_criteria(column, search_string):
+  def callback(cursor):
+    query = '''
+    SELECT books.id AS BookID, books.owner_id AS BookOwnerID, books.title AS BookTitle, 
+      books.summary AS BookSummary, 
+      books.cover_image_id AS BookCoverImageID, books.cover_image_link AS BookCoverImageLink, 
+      books.back_image_id AS BookBackImageID, books.back_image_link AS BookBackImageLink, 
+      books.tags AS BookTags, books.is_explicit AS BookExplicit, books.is_private AS BookPrivate, 
+      books.uuid AS BookUUID, books.date_created AS BookDateCreated, books.last_edited AS BookLastEdited, 
+      
+      users.id AS OwnerID, users.displayname AS OwnerDisplayname, users.username AS OwnerUsername, 
+      users.icon_link AS OwnerIconLink, users.wallpaper_link AS OwnerWallpaperLink, 
+      users.date_created AS OwnerDateCreated, users.email AS OwnerEmail, 
+      users.is_private AS OwnerPrivate, users.uuid AS OwnerUUID
+    FROM authority.books
+    JOIN authority.users ON books.owner_id = users.id
+    WHERE '%s' LIKE %s
+    TABLESAMPLE SYSTEM_ROWS(10)
+    '''
+
+    like_criteria = '%' + str(search_string) + '%'
+    cursor.execute(query, (column, like_criteria))
+    results = cursor.fetchall()
+    books = []
+
+    for result in results:
+      book = {
+        "id": result[0],
+        "owner_id": result[1],
+        "title": result[2],
+        "summary": result[3],
+        "cover_image_id": result[4],
+        "cover_image_link": result[5],
+        "back_image_id": result[6],
+        "back_image_link": result[7],
+        "tags": result[8],
+        "is_explicit": result[9],
+        "is_private": result[10],
+        "uuid": result[11],
+        "date_created": result[12],
+        "last_edited": result[13],
+        "owner": {
+          "id": result[14],
+          "displayname": result[15],
+          "username": result[16],
+          "icon_link": result[17],
+          "wallpaper_link": result[18],
+          "date_created": str(result[19]),
+          "email": str(result[20]),
+          "is_private": result[21],
+          "uuid": result[22],
+        }
+      }
+      books.append(book)
+
+    return books
+  
+  return run_db_action(callback)
+
+
+
+
+
+
+# --- for easily defining new function. copy/paste #
+#  
+# def db_fn():
+#   def callback(cursor):
+
+
+#   return run_db_action(callback)

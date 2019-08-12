@@ -72,3 +72,209 @@ def update_account(form_dict, you_dict):
     return True 
 
   return run_db_action(callback)
+
+# 
+
+def update_poem(form_dict):
+  def callback(cursor):
+    query_list = []
+
+    if 'title' in form_dict:
+      query = '''
+      UPDATE authority.poems SET title = '%s' WHERE id = %s
+      ''' % (form_dict['title'], form_dict["poem_id"], )
+      query_list.append(query)
+
+    if 'body' in form_dict:
+      query = '''
+      UPDATE authority.poems SET body = '%s' WHERE id = %s
+      ''' % (form_dict['body'], form_dict["poem_id"], )
+      query_list.append(query)
+
+    if 'image_id' in form_dict and 'image_link' in form_dict:
+      query = '''
+      UPDATE authority.poems SET image_id = '%s', image_link = '%s' WHERE id = %s
+      ''' % (form_dict['image_id'], form_dict['image_link'], form_dict["poem_id"], )
+      query_list.append(query)
+
+    if 'tags' in form_dict:
+      query = '''
+      UPDATE authority.poems SET tags = '%s' WHERE id = %s
+      ''' % (form_dict['tags'], form_dict["poem_id"], )
+      query_list.append(query)
+
+    if 'is_explicit' in form_dict:
+      query = '''
+      UPDATE authority.poems SET is_explicit = %s WHERE id = %s
+      ''' % (form_dict['is_explicit'], form_dict["poem_id"], )
+      query_list.append(query)
+
+    if 'is_private' in form_dict:
+      query = '''
+      UPDATE authority.poems SET is_private = %s WHERE id = %s
+      ''' % (form_dict['is_private'], form_dict["poem_id"], )
+      query_list.append(query)
+
+    for q in query_list:
+      cursor.execute(q)
+
+    return True 
+
+  return run_db_action(callback)
+
+def update_story(form_dict):
+  def callback(cursor):
+    query_list = []
+
+    if 'title' in form_dict:
+      query = '''
+      UPDATE authority.stories SET title = '%s' WHERE id = %s
+      ''' % (form_dict['title'], form_dict["story_id"], )
+      query_list.append(query)
+
+    if 'body' in form_dict:
+      query = '''
+      UPDATE authority.stories SET body = '%s' WHERE id = %s
+      ''' % (form_dict['body'], form_dict["story_id"], )
+      query_list.append(query)
+
+    if 'image_id' in form_dict and 'image_link' in form_dict:
+      query = '''
+      UPDATE authority.stories SET image_id = '%s', image_link = '%s' WHERE id = %s
+      ''' % (form_dict['image_id'], form_dict['image_link'], form_dict["story_id"], )
+      query_list.append(query)
+
+    if 'tags' in form_dict:
+      query = '''
+      UPDATE authority.stories SET tags = '%s' WHERE id = %s
+      ''' % (form_dict['tags'], form_dict["story_id"], )
+      query_list.append(query)
+
+    if 'is_explicit' in form_dict:
+      query = '''
+      UPDATE authority.stories SET is_explicit = %s WHERE id = %s
+      ''' % (form_dict['is_explicit'], form_dict["story_id"], )
+      query_list.append(query)
+
+    if 'is_private' in form_dict:
+      query = '''
+      UPDATE authority.stories SET is_private = %s WHERE id = %s
+      ''' % (form_dict['is_private'], form_dict["story_id"], )
+      query_list.append(query)
+
+    for q in query_list:
+      cursor.execute(q)
+
+    return True 
+
+  return run_db_action(callback)
+
+def update_book(form_dict):
+  def callback(cursor):
+    query_list = []
+
+    if 'title' in form_dict:
+      query = '''
+      UPDATE authority.books SET title = '%s' WHERE id = %s
+      ''' % (form_dict['title'], form_dict["book_id"], )
+      query_list.append(query)
+
+    if 'summary' in form_dict:
+      query = '''
+      UPDATE authority.books SET summary = '%s' WHERE id = %s
+      ''' % (form_dict['summary'], form_dict["book_id"], )
+      query_list.append(query)
+
+    if 'cover_image_id' in form_dict and 'cover_image_link' in form_dict:
+      query = '''
+      UPDATE authority.books SET cover_image_id = '%s', cover_image_link = '%s' WHERE id = %s
+      ''' % (form_dict['cover_image_id'], form_dict['cover_image_link'], form_dict["book_id"], )
+      query_list.append(query)
+
+    if 'back_image_id' in form_dict and 'back_image_link' in form_dict:
+      query = '''
+      UPDATE authority.books SET back_image_id = '%s', back_image_link = '%s' WHERE id = %s
+      ''' % (form_dict['back_image_id'], form_dict['back_image_link'], form_dict["book_id"], )
+      query_list.append(query)
+
+    if 'tags' in form_dict:
+      query = '''
+      UPDATE authority.books SET tags = '%s' WHERE id = %s
+      ''' % (form_dict['tags'], form_dict["book_id"], )
+      query_list.append(query)
+
+    if 'is_explicit' in form_dict:
+      query = '''
+      UPDATE authority.books SET is_explicit = %s WHERE id = %s
+      ''' % (form_dict['is_explicit'], form_dict["book_id"], )
+      query_list.append(query)
+
+    if 'is_private' in form_dict:
+      query = '''
+      UPDATE authority.books SET is_private = %s WHERE id = %s
+      ''' % (form_dict['is_private'], form_dict["book_id"], )
+      query_list.append(query)
+
+    for q in query_list:
+      cursor.execute(q)
+
+    return True 
+
+  return run_db_action(callback)
+
+def update_book_page(form_dict):
+  def callback(cursor):
+    query_list = []
+
+    if 'body' in form_dict:
+      query = '''
+      UPDATE authority.book_pages SET body = '%s' WHERE id = %s
+      ''' % (form_dict['body'], form_dict["book_page_id"], )
+      query_list.append(query)
+
+    if 'image_id' in form_dict and 'image_link' in form_dict:
+      query = '''
+      UPDATE authority.book_pages SET image_id = '%s', image_link = '%s' WHERE id = %s
+      ''' % (form_dict['image_id'], form_dict['image_link'], form_dict["book_page_id"], )
+      query_list.append(query)
+
+    if 'tags' in form_dict:
+      query = '''
+      UPDATE authority.book_pages SET tags = '%s' WHERE id = %s
+      ''' % (form_dict['tags'], form_dict["book_page_id"], )
+      query_list.append(query)
+
+    if 'is_explicit' in form_dict:
+      query = '''
+      UPDATE authority.book_pages SET is_explicit = %s WHERE id = %s
+      ''' % (form_dict['is_explicit'], form_dict["book_page_id"], )
+      query_list.append(query)
+
+    if 'is_private' in form_dict:
+      query = '''
+      UPDATE authority.book_pages SET is_private = %s WHERE id = %s
+      ''' % (form_dict['is_private'], form_dict["book_page_id"], )
+      query_list.append(query)
+
+    for q in query_list:
+      cursor.execute(q)
+
+    return True 
+
+  return run_db_action(callback)
+
+# 
+
+def proxy_update_comment(form_dict):
+  def callback(cursor):
+    query_list = []
+
+    if 'body' in form_dict:
+      query = '''
+      UPDATE authority.'%s' SET body = %s WHERE id = %s
+      ''' 
+      cursor.execute(query, (form_dict['table_name'], form_dict['body'], form_dict["content_id"], ))
+
+    return True 
+
+  return run_db_action(callback)

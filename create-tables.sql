@@ -1,5 +1,6 @@
 CREATE SCHEMA IF NOT EXISTS authority;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "tsm_system_rows";
 
 CREATE TABLE IF NOT EXISTS authority.users (
   id SERIAL NOT NULL,
@@ -175,6 +176,7 @@ CREATE TABLE IF NOT EXISTS authority.book_pages (
   CONSTRAINT book_page_owner FOREIGN KEY (owner_id) REFERENCES authority.users (id)
 );
 
+
 CREATE TABLE IF NOT EXISTS authority.poem_viewers (
   id SERIAL NOT NULL,
   
@@ -234,6 +236,7 @@ CREATE TABLE IF NOT EXISTS authority.book_page_viewers (
   CONSTRAINT view_book_page_user FOREIGN KEY (user_id) REFERENCES authority.users (id),
   CONSTRAINT view_book_page FOREIGN KEY (book_page_id) REFERENCES authority.book_pages (id)
 );
+
 
 CREATE TABLE IF NOT EXISTS authority.poem_view_requests (
   id SERIAL NOT NULL,
@@ -295,6 +298,7 @@ CREATE TABLE IF NOT EXISTS authority.book_page_view_requests (
   CONSTRAINT view_book_page_request FOREIGN KEY (book_page_id) REFERENCES authority.book_pages (id)
 );
 
+
 CREATE TABLE IF NOT EXISTS authority.poem_likes (
   id SERIAL NOT NULL,
   
@@ -350,6 +354,7 @@ CREATE TABLE IF NOT EXISTS authority.book_page_likes (
   CONSTRAINT book_page_like_user FOREIGN KEY (user_id) REFERENCES authority.users (id),
   CONSTRAINT book_page_like_book_page FOREIGN KEY (book_page_id) REFERENCES authority.book_pages (id)
 );
+
 
 CREATE TABLE IF NOT EXISTS authority.poem_comments (
   id SERIAL NOT NULL,
@@ -407,19 +412,6 @@ CREATE TABLE IF NOT EXISTS authority.book_page_comments (
   CONSTRAINT comment_book_page FOREIGN KEY (book_page_id) REFERENCES authority.book_pages (id)
 );
 
-CREATE TABLE IF NOT EXISTS authority.book_page_comments (
-  id SERIAL NOT NULL,
-  
-  owner_id int NOT NULL,
-  book_page_id int NOT NULL,
-  body varchar(500) NOT NULL,
-  uuid UUID NOT NULL DEFAULT uuid_generate_v1(),
-  date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-  PRIMARY KEY (id),
-  CONSTRAINT book_page_comment_owner FOREIGN KEY (owner_id) REFERENCES authority.users (id),
-  CONSTRAINT comment_book_page FOREIGN KEY (book_page_id) REFERENCES authority.book_pages (id)
-);
 
 CREATE TABLE IF NOT EXISTS authority.poem_reviews (
   id SERIAL NOT NULL,
@@ -480,6 +472,7 @@ CREATE TABLE IF NOT EXISTS authority.book_page_reviews (
   CONSTRAINT book_page_review_book_page FOREIGN KEY (book_page_id) REFERENCES authority.book_pages (id),
   CONSTRAINT book_page_review_writer FOREIGN KEY (writer_id) REFERENCES authority.users (id)
 );
+
 
 CREATE TABLE IF NOT EXISTS authority.messages (
   id SERIAL NOT NULL,
