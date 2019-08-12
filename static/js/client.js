@@ -73,8 +73,20 @@ const Client = (function(){
     });
   };
 
+  const create_poem = function(data) {
+    return send_request("/create_poem", "POST", data, null).then(json => {
+      return json;
+    });
+  };
+
   const create_story = function(data) {
     return send_request("/create_story", "POST", data, null).then(json => {
+      return json;
+    });
+  };
+
+  const create_book = function(data) {
+    return send_request("/create_book", "POST", data, null).then(json => {
       return json;
     });
   };
@@ -96,7 +108,9 @@ const Client = (function(){
     get_user_profile_by_username,
     get_user_profile_by_id,
     update_account,
+    create_poem,
     create_story,
+    create_book,
     get_story_full_by_id,
   });
 })();

@@ -74,6 +74,27 @@ def get_user_by_value(user_value):
     return db_select_queries.get_user_by_username(user_value)
   return None
 
+def process_image(request_files, input_name):
+  if input_name not in request_files:
+    return False
+
+  input_file = request_files[input_name]
+
+  if input_file:
+    is_image_valid = input_file and input_file.filename != '' and allowed_photo(input_file.filename)
+    if not is_image_valid:
+      raise
+    else:
+      icon_res = uploadFile(input_file)
+      image_dict = {
+        "image_id": icon_res["upload_result"]["public_id"],
+        "image_link": icon_res["upload_result"]["secure_url"]
+      }
+      return image_dict
+  else:
+    return False
+
+
 
 
 @app.route('/', methods=['GET'])
@@ -402,6 +423,75 @@ def sign_up():
     new_username = user_session['you_username'],
   )
 
+@app.route('/create_poem', methods=['POST'])
+def create_poem():
+  if 'title' not in request.form:
+    return jsonify(error = True, message = 'title is required')
+
+  if 'body' not in request.form:
+    return jsonify(error = True, message = 'body is required')
+
+  if not request.form['title']:
+    return jsonify(error = True, message = 'title is required')
+
+  if not request.form['body']:
+    return jsonify(error = True, message = 'body is required')
+
+  try:
+    title = request.form['title'].decode()
+    body = request.form['body'].decode()
+  except Exception as e:
+    print(e)
+    raise e 
+    return
+
+  form_dict = {
+    "title": title,
+    "body": body,
+  }
+
+  if 'tags' in request.form:
+    form_dict['tags'] = str(request.form['tags']).encode('utf-8')
+    if form_dict['tags']:
+      if len(form_dict['tags']) > 100:
+        return jsonify(error = True, message = 'tags input max of 100 characters exceeded')
+  else:
+    form_dict['tags'] = ''
+
+  if 'explicit' in request.form:
+    if request.form['explicit'] == 'yes':
+      form_dict['is_explicit'] = True
+    else:
+      form_dict['is_explicit'] = False
+  else:
+    form_dict['is_explicit'] = False
+
+  if 'visibility' in request.form:
+    if request.form['visibility'] == 'private':
+      form_dict['is_private'] = True
+    else:
+      form_dict['is_private'] = False
+  else:
+    form_dict['is_private'] = False
+
+  poem_icon_file = request.files['poem-icon']
+  if poem_icon_file:
+    is_image_valid = poem_icon_file and poem_icon_file.filename != '' and allowed_photo(poem_icon_file.filename)
+    if not is_image_valid:
+      return jsonify(error = True, message = 'file not valid')
+    else:
+      icon_res = uploadFile(poem_icon_file)
+      print('icon_res', icon_res)
+      form_dict['image_id'] = icon_res["upload_result"]["public_id"]
+      form_dict['image_link'] = icon_res["upload_result"]["secure_url"]
+  else:
+    form_dict['image_id'] = ''
+    form_dict['image_link'] = ''
+
+  new_poem_id = db_insert_queries.create_new_poem(form_dict, user_session['you'])
+  poem = db_select_queries.get_poem_full_by_id(new_poem_id)
+  return jsonify(message = 'Poem Created Successfully!', poem = poem)
+
 @app.route('/create_story', methods=['POST'])
 def create_story():
   if 'title' not in request.form:
@@ -416,11 +506,17 @@ def create_story():
   if not request.form['body']:
     return jsonify(error = True, message = 'body is required')
 
-  print(request.form['body'].encode('utf-8') )
+  try:
+    title = request.form['title'].decode()
+    body = request.form['body'].decode()
+  except Exception as e:
+    print(e)
+    raise e 
+    return
 
   form_dict = {
-    "title": str(request.form['title']).encode('utf-8'),
-    "body": str(request.form['body']).encode('utf-8'),
+    "title": title,
+    "body": body,
   }
 
   if 'tags' in request.form:
@@ -449,7 +545,7 @@ def create_story():
 
   story_icon_file = request.files['story-icon']
   if story_icon_file:
-    is_icon_valid = story_icon_file and story_icon_file.filename != '' and allowed_photo(profile_icon_file.filename)
+    is_icon_valid = story_icon_file and story_icon_file.filename != '' and allowed_photo(story_icon_file.filename)
     if not is_icon_valid:
       return jsonify(error = True, message = 'file not valid')
     else:
@@ -464,6 +560,78 @@ def create_story():
   new_story_id = db_insert_queries.create_new_story(form_dict, user_session['you'])
   story = db_select_queries.get_story_full_by_id(new_story_id)
   return jsonify(message = 'Story Created Successfully!', story = story)
+
+@app.route('/create_book', methods=['POST'])
+def create_book():
+  if 'title' not in request.form:
+    return jsonify(error = True, message = 'title is required')
+
+  if 'summary' not in request.form:
+    return jsonify(error = True, message = 'summary is required')
+
+  if not request.form['title']:
+    return jsonify(error = True, message = 'title is required')
+
+  if not request.form['summary']:
+    return jsonify(error = True, message = 'summary is required')
+
+  try:
+    title = request.form['title'].decode()
+    summary = request.form['summary'].decode()
+  except Exception as e:
+    print(e)
+    raise e 
+    return
+
+  form_dict = {
+    "title": title,
+    "summary": summary,
+  }
+
+  if 'tags' in request.form:
+    form_dict['tags'] = str(request.form['tags']).encode('utf-8')
+    if form_dict['tags']:
+      if len(form_dict['tags']) > 100:
+        return jsonify(error = True, message = 'tags input max of 100 characters exceeded')
+  else:
+    form_dict['tags'] = ''
+
+  if 'explicit' in request.form:
+    if request.form['explicit'] == 'yes':
+      form_dict['is_explicit'] = True
+    else:
+      form_dict['is_explicit'] = False
+  else:
+    form_dict['is_explicit'] = False
+
+  if 'visibility' in request.form:
+    if request.form['visibility'] == 'private':
+      form_dict['is_private'] = True
+    else:
+      form_dict['is_private'] = False
+  else:
+    form_dict['is_private'] = False
+
+  try:
+    upload_book_cover = process_image(request.files, 'book-icon-cover')
+    form_dict['cover_image_id'] = upload_book_cover["image_id"] if upload_book_cover else ''
+    form_dict['cover_image_link'] = upload_book_cover["image_link"] if upload_book_cover else ''
+  except Exception as E:
+    print('Error: ', E)
+    return jsonify(error = True, message = 'could not process given cover image file')
+
+  try:
+    upload_book_back = process_image(request.files, 'book-icon-back')
+    form_dict['back_image_id'] = upload_book_back["image_id"] if upload_book_back else ''
+    form_dict['back_image_link'] = upload_book_back["image_link"] if upload_book_back else ''
+  except Exception as E:
+    print('Error: ', E)
+    return jsonify(error = True, message = 'could not process given back image file')
+
+  new_book_id = db_insert_queries.create_new_book(form_dict, user_session['you'])
+  book = db_select_queries.get_book_full_by_id(new_book_id)
+  return jsonify(message = 'Book Created Successfully!', book = book)
+
 
 
 

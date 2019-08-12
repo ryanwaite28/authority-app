@@ -38,7 +38,23 @@ VALID_CONTENT_TYPES = set(['poems', 'stories', 'books'])
 default_icon = '/static/img/anon.png'
 default_wallpaper = '/static/img/blank.png'
 
+action_types = {
+  'follow': 'follow',
+  'new_message': 'new_message',
+}
 
+target_types = {
+  'follow': 'follow',
+  'message': 'message',
+}
+
+def apply_notification_message(data):
+  if data['action_type'] == action_types['follow']:
+    data['notification_message'] = data['from']['username'] + ' started following you.'
+    data['link'] = '/users/' + str(data['from']['id'])
+  if data['action_type'] == action_types['new_message']:
+    data['notification_message'] = data['from']['username'] + ' sent you a message.'
+    data['link'] = '/messages/' + str(data['from']['id']) + '-' + str(data['target_id'])
 
 def allowed_photo(filename):
   return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_PHOTOS
