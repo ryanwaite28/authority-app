@@ -39,12 +39,49 @@ default_icon = '/static/img/anon.png'
 default_wallpaper = '/static/img/blank.png'
 
 action_types = {
-  'follow': 'follow',
+  'new_follow': 'new_follow',
+  'new_follow_request': 'new_follow_request',
   'new_message': 'new_message',
+  'new_user_review': 'new_user_review',
+
+  'new_poem': 'new_poem',
+  'new_story': 'new_story',
+  'new_book': 'new_book',
+  'new_book_page': 'new_book_page',
+
+  'new_poem_viewer': 'new_poem_viewer',
+  'new_story_viewer': 'new_story_viewer',
+  'new_book_viewer': 'new_book_viewer',
+  'new_book_page_viewer': 'new_book_page_viewer',
+
+  'new_poem_view_request': 'new_poem_view_request',
+  'new_story_view_request': 'new_story_view_request',
+  'new_book_view_request': 'new_book_view_request',
+  'new_book_page_view_request': 'new_book_page_view_request',
+
+  'new_poem_like': 'new_poem_like',
+  'new_story_like': 'new_story_like',
+  'new_book_like': 'new_book_like',
+  'new_book_page_like': 'new_book_page_like',
+
+  'new_poem_dislike': 'new_poem_dislike',
+  'new_story_dislike': 'new_story_dislike',
+  'new_book_dislike': 'new_book_dislike',
+  'new_book_page_dislike': 'new_book_page_dislike',
+
+  'new_poem_comment': 'new_poem_comment',
+  'new_story_comment': 'new_story_comment',
+  'new_book_comment': 'new_book_comment',
+  'new_book_page_comment': 'new_book_page_comment',
+
+  'new_poem_review': 'new_poem_review',
+  'new_story_reviewt': 'new_story_review',
+  'new_book_review': 'new_book_review',
+  'new_book_page_review': 'new_book_page_review',
 }
 
 target_types = {
-  'follow': 'follow',
+  'user': 'user',
   'message': 'message',
 }
 

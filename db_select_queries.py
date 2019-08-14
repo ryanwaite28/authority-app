@@ -2693,6 +2693,130 @@ def search_books_by_criteria(column, search_string):
   
   return run_db_action(callback)
 
+def get_comment_by_type_and_id(table_name, field_name, row_id):
+  def callback(cursor):
+    # since the table structure is the same, this function should be reusable
+    select_tuple = (
+      table_name,
+      table_name,
+      table_name,
+      table_name,
+      table_name,
+      field_name, # field name
+      table_name,
+      table_name,
+      table_name,
+      table_name,
+      table_name,
+      table_name,
+      row_id,
+    )
+
+    query = '''
+    SELECT '%s'.id AS '%s'ID, '%s'.owner_id AS '%s'CommentOwnerID, 
+      '%s'.'%s' AS '%s', '%s'.date_created AS '%s'CommentDateCreated, 
+      users.id AS OwnerID, users.displayname AS OwnerDisplayname, users.username AS OwnerUsername, 
+      users.icon_link AS OwnerIconLink, users.wallpaper_link AS OwnerWallpaperLink, 
+      users.date_created AS OwnerDateCreated, users.email AS OwnerEmail, 
+      users.is_private AS OwnerPrivate, users.uuid AS OwnerUUID
+    FROM authority.'%s'
+    JOIN authority.users ON '%s'.owner_id = users.id
+    WHERE '%s'.id = %s
+    ''' % select_tuple
+
+    print('select query - ', query)
+
+    cursor.execute(query)
+    record = cursor.fetchone()
+
+    comment = {
+      "id": record[0],
+      field_name: record[1],
+      "body": record[2],
+      "date_created": record[3],
+      "user": {
+        "id": record[4],
+        "displayname": record[5],
+        "username": record[6],
+        "icon_link": record[7],
+        "wallpaper_link": record[8],
+        "date_created": str(record[9]),
+        "email": str(record[10]),
+        "is_private": record[11],
+        "uuid": record[12],
+      }
+    }
+
+    return comment
+
+  return run_db_action(callback)
+
+def get_comment_by_type_and_id(table_name, field_name, row_id):
+  def callback(cursor):
+    select_tuple = (
+      table_name,
+      table_name,
+      table_name,
+      field_name, # field name
+      field_name, # field name
+      table_name,
+      table_name,
+      table_name,
+      table_name,
+      table_name,
+      table_name,
+      table_name,
+      table_name,
+      table_name,
+      table_name,
+      table_name,
+      row_id,
+    )
+
+    query = '''
+    SELECT '%s'.id AS '%s'ReviewID, '%s'.'%s' AS '%s', 
+      '%s'.writer_id AS '%s'ReviewWriterId, '%s'.rating AS '%s'ReviewRating, 
+      '%s'.summary AS '%s'ReviewSummary, '%s'.date_created AS '%s'ReviewDateCreated, 
+      
+      users.id AS OwnerID, users.displayname AS OwnerDisplayname, users.username AS OwnerUsername, 
+      users.icon_link AS OwnerIconLink, users.wallpaper_link AS OwnerWallpaperLink, 
+      users.date_created AS OwnerDateCreated, users.email AS OwnerEmail, 
+      users.is_private AS OwnerPrivate, users.uuid AS OwnerUUID
+    FROM authority.'%s'
+    JOIN authority.users ON '%s'.owner_id = users.id
+    WHERE '%s'.id = %s
+    ''' % select_tuple
+
+
+    print('select query - ', query)
+
+    cursor.execute(query)
+    record = cursor.fetchone()
+
+    review = {
+      "id": record[0],
+      field_name: record[1],
+      "writer_id": record[2],
+      "rating": record[3],
+      "summary": record[4],
+      "date_created": record[5],
+      "writer": {
+        "id": record[6],
+        "displayname": record[7],
+        "username": record[8],
+        "icon_link": record[9],
+        "wallpaper_link": record[10],
+        "date_created": str(record[11]),
+        "email": str(record[12]),
+        "is_private": record[13],
+        "uuid": record[14],
+      }
+    }
+
+    return review
+
+  return run_db_action(callback)
+
 
 
 
