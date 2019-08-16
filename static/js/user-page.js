@@ -16,8 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   Promise.all([get_you_promise, get_user_promise])
   .then(values => {
-    you = values[0].user;
-    user = values[1].user;
+    you = values[0].user || {};
+    user = values[1].user || {};
     init();
   });
 });

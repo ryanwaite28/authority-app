@@ -91,8 +91,38 @@ const Client = (function(){
     });
   };
 
+  const get_poem_full_by_id = function(story_id) {
+    return send_request(`/get_poem_full_by_id/${story_id}`, "GET", null, null).then(json => {
+      return json;
+    });
+  };
+
   const get_story_full_by_id = function(story_id) {
     return send_request(`/get_story_full_by_id/${story_id}`, "GET", null, null).then(json => {
+      return json;
+    });
+  };
+
+  const get_book_full_by_id = function(story_id) {
+    return send_request(`/get_book_full_by_id/${story_id}`, "GET", null, null).then(json => {
+      return json;
+    });
+  };
+
+  const get_random_users = function() {
+    return send_request(`/get_random_users`, "GET", null, null).then(json => {
+      return json;
+    });
+  };
+
+  const get_random_poems = function() {
+    return send_request(`/get_random_poems`, "GET", null, null).then(json => {
+      return json;
+    });
+  };
+
+  const get_random_stories = function() {
+    return send_request(`/get_random_stories`, "GET", null, null).then(json => {
       return json;
     });
   };
@@ -111,6 +141,11 @@ const Client = (function(){
     create_poem,
     create_story,
     create_book,
+    get_poem_full_by_id,
     get_story_full_by_id,
+    get_book_full_by_id,
+    get_random_users,
+    get_random_poems,
+    get_random_stories,
   });
 })();

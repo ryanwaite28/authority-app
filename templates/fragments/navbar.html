@@ -11,9 +11,11 @@
         <div class="navbar-dropdown">
           <a class="navbar-item" href="/create/poem">Poem</a>
           <a class="navbar-item" href="/create/story">Story</a>
-          <a class="navbar-item" href="/create/book">Book</a>
+          <!-- <a class="navbar-item" href="/create/book">Book</a> -->
         </div>
       </div>
+
+      <a class="navbar-item" href="/settings">Settings</a>
     {% endif %}
 
     <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbar-links">
@@ -37,9 +39,6 @@
           {% else %}
           <a class="button is-light" href="/">
             Home
-          </a>
-          <a class="button is-light" href="/settings">
-            Settings
           </a>
           <a class="button is-primary" href="/signout">
             <strong>Sign out</strong>

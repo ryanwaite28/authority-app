@@ -163,12 +163,12 @@ def create_story_page():
   you_id = user_session['you_id'] if 'you_id' in user_session else False
   return render_template('create-story-page.html', logged_in = logged_in, you_id = you_id)
 
-@app.route('/create/book', methods=['GET'])
-@login_required
-def create_book_page():
-  logged_in = True if 'session_id' in user_session else False
-  you_id = user_session['you_id'] if 'you_id' in user_session else False
-  return render_template('create-book-page.html', logged_in = logged_in, you_id = you_id)
+# @app.route('/create/book', methods=['GET'])
+# @login_required
+# def create_book_page():
+#   logged_in = True if 'session_id' in user_session else False
+#   you_id = user_session['you_id'] if 'you_id' in user_session else False
+#   return render_template('create-book-page.html', logged_in = logged_in, you_id = you_id)
 
 @app.route('/create/book/<int:book_id>/page', methods=['GET'])
 @login_required
@@ -290,19 +290,34 @@ def get_user_by_username_or_id(value):
 
   return jsonify(user = user)
 
+@app.route('/get_poem_full_by_id/<int:poem_id>', methods=['GET'])
+def get_poem_full_by_id(poem_id):
+  poem = db_select_queries.get_poem_full_by_id(poem_id)
+  return jsonify(poem = poem)
+
 @app.route('/get_story_full_by_id/<int:story_id>', methods=['GET'])
 def get_story_full_by_id(story_id):
   story = db_select_queries.get_story_full_by_id(story_id)
   return jsonify(story = story)
 
 @app.route('/get_random_users', methods=['GET'])
-def get_random_users(user_id):
-  users = db_select_queries.get_random_users(user_id)
+def get_random_users():
+  users = db_select_queries.get_random_users()
   return jsonify(users = users)
 
-@app.route('/search_users_by_username/<string:username_query>', methods=['GET'])
-def search_users_by_username(username_query):
-  users = db_select_queries.get_user_by_username(username_query)
+@app.route('/get_random_poems', methods=['GET'])
+def get_random_poems():
+  poems = db_select_queries.get_random_poems()
+  return jsonify(poems = poems)
+
+@app.route('/get_random_stories', methods=['GET'])
+def get_random_stories():
+  stories = db_select_queries.get_random_stories()
+  return jsonify(stories = stories)
+
+@app.route('/search_users_by_criteria/<string:field>/<string:value>', methods=['GET'])
+def search_users_by_criteria(field, value):
+  users = db_select_queries.search_users_by_criteria(field, value)
   return jsonify(users = users)
 
 @app.route('/get_random/<string:content_type>', methods=['GET'])

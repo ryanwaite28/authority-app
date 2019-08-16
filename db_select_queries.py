@@ -225,12 +225,12 @@ def get_poem_full_by_id(poem_id):
       users.date_created AS OwnerDateCreated, users.email AS OwnerEmail, 
       users.is_private AS OwnerPrivate, users.uuid AS OwnerUUID,
       
-      (SELECT COUNT(poem_viewers.id) FROM authority.poem_viewers WHERE poem_viewers.poem_id = stories.id) AS PoemViewers,
-      (SELECT COUNT(poem_view_requests.id) FROM authority.poem_view_requests WHERE poem_view_requests.poem_id = stories.id) AS PoemViewRequests,
-      (SELECT COUNT(poem_likes.id) FROM authority.poem_likes WHERE poem_likes.poem_id = stories.id AND like_type = 1) AS PoemLikes,
-      (SELECT COUNT(poem_likes.id) FROM authority.poem_likes WHERE poem_likes.poem_id = stories.id AND like_type = 0) AS PoemDislikes,
-      (SELECT COUNT(poem_comments.id) FROM authority.poem_comments WHERE poem_comments.poem_id = stories.id) AS PoemComments,
-      (SELECT COUNT(poem_reviews.id) FROM authority.poem_reviews WHERE poem_reviews.poem_id = stories.id) AS PoemReviews
+      (SELECT COUNT(poem_viewers.id) FROM authority.poem_viewers WHERE poem_viewers.poem_id = poems.id) AS PoemViewers,
+      (SELECT COUNT(poem_view_requests.id) FROM authority.poem_view_requests WHERE poem_view_requests.poem_id = poems.id) AS PoemViewRequests,
+      (SELECT COUNT(poem_likes.id) FROM authority.poem_likes WHERE poem_likes.poem_id = poems.id AND like_type = 1) AS PoemLikes,
+      (SELECT COUNT(poem_likes.id) FROM authority.poem_likes WHERE poem_likes.poem_id = poems.id AND like_type = 0) AS PoemDislikes,
+      (SELECT COUNT(poem_comments.id) FROM authority.poem_comments WHERE poem_comments.poem_id = poems.id) AS PoemComments,
+      (SELECT COUNT(poem_reviews.id) FROM authority.poem_reviews WHERE poem_reviews.poem_id = poems.id) AS PoemReviews
     FROM authority.poems
     JOIN authority.users ON poems.owner_id = users.id
     WHERE poems.id = %s
@@ -2315,7 +2315,7 @@ def get_random_users():
         "date_created": str(result[5]),
         "email": str(result[6]),
         "is_private": result[7],
-        "uuid": result[9],
+        "uuid": result[8],
       }
       users.append(user)
 
@@ -2336,8 +2336,8 @@ def get_random_poems():
       users.date_created AS OwnerDateCreated, users.email AS OwnerEmail, 
       users.is_private AS OwnerPrivate, users.uuid AS OwnerUUID
     FROM authority.poems
-    JOIN authority.users ON poems.owner_id = users.id
     TABLESAMPLE SYSTEM_ROWS(5)
+    JOIN authority.users ON poems.owner_id = users.id
     '''
 
     cursor.execute(query)
@@ -2389,8 +2389,8 @@ def get_random_stories():
       users.date_created AS OwnerDateCreated, users.email AS OwnerEmail, 
       users.is_private AS OwnerPrivate, users.uuid AS OwnerUUID
     FROM authority.stories
-    JOIN authority.users ON stories.owner_id = users.id
     TABLESAMPLE SYSTEM_ROWS(5)
+    JOIN authority.users ON stories.owner_id = users.id
     '''
 
     cursor.execute(query)
@@ -2444,8 +2444,8 @@ def get_random_books():
       users.date_created AS OwnerDateCreated, users.email AS OwnerEmail, 
       users.is_private AS OwnerPrivate, users.uuid AS OwnerUUID
     FROM authority.books
-    JOIN authority.users ON books.owner_id = users.id
     TABLESAMPLE SYSTEM_ROWS(5)
+    JOIN authority.users ON books.owner_id = users.id
     '''
 
     cursor.execute(query)
@@ -2489,20 +2489,38 @@ def get_random_books():
 # 
 
 def search_users_by_criteria(column, search_string):
+  valid_columns = ['username', 'tags']
+  if column not in valid_columns:
+    print('column', column)
+    raise ValueError('invalid column given: ' + str(column))
+
   # get random: https://www.postgresql.org/docs/9.6/tsm-system-rows.html
   def callback(cursor):
-    query = '''
-    SELECT users.id AS OwnerID, users.displayname AS OwnerDisplayname, users.username AS OwnerUsername, 
-      users.icon_link AS OwnerIconLink, users.wallpaper_link AS OwnerWallpaperLink, 
-      users.date_created AS OwnerDateCreated, users.email AS OwnerEmail, 
-      users.is_private AS OwnerPrivate, users.uuid AS OwnerUUID
-    FROM authority.users
-    WHERE '%s' LIKE %s
-    TABLESAMPLE SYSTEM_ROWS(10)
-    '''
+    if column == 'username':
+      query = '''
+      SELECT users.id AS OwnerID, users.displayname AS OwnerDisplayname, users.username AS OwnerUsername, 
+        users.icon_link AS OwnerIconLink, users.wallpaper_link AS OwnerWallpaperLink, 
+        users.date_created AS OwnerDateCreated, users.email AS OwnerEmail, 
+        users.is_private AS OwnerPrivate, users.uuid AS OwnerUUID
+      FROM authority.users
+      TABLESAMPLE SYSTEM_ROWS(10)
+      WHERE username LIKE %s
+      '''
+    elif column == 'tags':
+      query = '''
+      SELECT users.id AS OwnerID, users.displayname AS OwnerDisplayname, users.username AS OwnerUsername, 
+        users.icon_link AS OwnerIconLink, users.wallpaper_link AS OwnerWallpaperLink, 
+        users.date_created AS OwnerDateCreated, users.email AS OwnerEmail, 
+        users.is_private AS OwnerPrivate, users.uuid AS OwnerUUID
+      FROM authority.users
+      TABLESAMPLE SYSTEM_ROWS(10)
+      WHERE tags LIKE %s
+      '''
 
     like_criteria = '%' + str(search_string) + '%'
-    cursor.execute(query, (column, like_criteria))
+    select_tuple = (like_criteria, )
+    
+    cursor.execute(query, select_tuple)
     results = cursor.fetchall()
     users = []
 
@@ -2516,7 +2534,7 @@ def search_users_by_criteria(column, search_string):
         "date_created": str(result[5]),
         "email": str(result[6]),
         "is_private": result[7],
-        "uuid": result[9],
+        "uuid": result[8],
       }
       users.append(user)
 
